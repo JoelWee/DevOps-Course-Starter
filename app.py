@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 
-from session_items import get_items, add_item, get_item, save_item
+from session_items import get_items, add_item, move_to_done
 
 app = Flask(__name__)
 app.config.from_object("flask_config.Config")
@@ -19,12 +19,10 @@ def add():
 
 
 @app.route(
-    "/items/<int:item_id>", methods=["POST"]
+    "/items/<string:item_id>", methods=["POST"]
 )  # Should be patch, but can't do without a forms library
 def complete_item(item_id):
-    item = get_item(id=item_id)
-    item["status"] = "Complete"
-    save_item(item)
+    move_to_done(item_id)
     return redirect(url_for("index"))
 
 
