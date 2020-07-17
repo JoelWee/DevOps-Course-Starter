@@ -1,0 +1,7 @@
+{
+  "python.pythonPath": "/Users/JoelWee/Documents/Code/DevOps-Course-Starter/env/bin/python3",
+  "python.linting.pylintEnabled": false,
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": true,
+  "python.formatting.provider": "black"
+}
