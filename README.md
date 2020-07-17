@@ -29,3 +29,13 @@ You should see output similar to the following:
  * Debugger PIN: 226-556-590
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
+
+
+### Running Tests
+#### Commands
+```python
+pytest tests  # run unit and integration tests
+pytest tests_e2e  # run e2e tests
+```
+
+Note that running `pytest` doesn't work because of different .env files used

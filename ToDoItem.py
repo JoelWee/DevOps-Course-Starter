@@ -1,8 +1,17 @@
 from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
 
 
-@dataclass
+class ItemStatus(Enum):
+    TO_DO = "To Do"
+    DOING = "Doing"
+    DONE = "Done"
+
+
+@dataclass(frozen=True)
 class ToDoItem:
-    id: int
-    status: str
+    id: str
+    status: ItemStatus
     title: str
+    last_modified: datetime

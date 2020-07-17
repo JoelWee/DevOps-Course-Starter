@@ -8,22 +8,68 @@
 </div>
 
 <div class="row">
-  <div class="col-md-12">
-    <h2>Items</h2>
+  <div class="col-md-4">
+    <h2>To Do</h2>
     <ul class="list-group mb-4">
-      {% for item in items  %}
-      <li>{{ item.title }}&nbsp
-        {% if item.status != "Complete" %}
-        <form action="{{ '/items/' + item.id|string }}" method="post">
-          <button type="submit">Complete</button>
+      {% for item in view_model.to_do_items  %}
+      <li>{{ item.title }}
+        <form id="{{ 'do-' + item.title|string }}" action="{{ '/items/' + item.id|string + '/do'}}" method="post">
+          <button type="submit">Do</button>
         </form>
-        {% else %}
-        <span>– is completed!</span>
-        {% endif %}
       </li>
-
       {% endfor %}
     </ul>
+  </div>
+
+
+  <div class="col-md-4">
+    <h2>Doing</h2>
+    <ul class="list-group mb-4">
+      {% for item in view_model.doing_items  %}
+      <li>{{ item.title }}
+        <form id="{{ 'complete-' + item.title|string }}" action="{{ '/items/' + item.id|string  + '/done'}}"
+          method="post">
+          <button type="submit">Complete</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="col-md-4">
+    <h2>Done</h2>
+    {% if view_model.show_all_done_items %}
+    <ul class="list-group mb-4">
+      {% for item in view_model.done_items  %}
+      <li>{{ item.title }}
+        <form id="{{ 'reset-' + item.title|string }}" action="{{ '/items/' + item.id|string + '/to_do'}}" method="post">
+          <button type="submit">Reset</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% else %}
+    <ul class="list-group mb-4">
+      {% for item in view_model.recent_done_items  %}
+      <li>{{ item.title }}
+        <form action="{{ '/items/' + item.id|string + '/to_do'}}" method="post">
+          <button type="submit">Reset</button>
+        </form>
+      </li>
+      {% endfor %}
+      <details>
+        <summary>view older...</summary>
+        {% for item in view_model.older_done_items  %}
+        <li>{{ item.title }}
+          <form action="{{ '/items/' + item.id|string + '/to_do'}}" method="post">
+            <button type="submit">Reset</button>
+          </form>
+        </li>
+        {% endfor %}
+      </details>
+    </ul>
+    {% endif %}
   </div>
 </div>
 
