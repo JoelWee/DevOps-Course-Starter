@@ -9,16 +9,16 @@ Vagrant.configure("2") do |config|
       libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
       xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
     git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
+    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.profile
     
     # sourcing ~/.bashrc doesn't seem to work...
+    source ~/.profile
     export PATH="$HOME/.pyenv/bin:$PATH"
-    eval "$(pyenv init -)"
-    echo 'eval "$(pyenv init -)"' > ~/.bashrc
-    pyenv install 3.8.1 
-    pyenv global 3.8.1
+    # eval "$(pyenv init -)"
+    pyenv install 3.8.5
+    pyenv global 3.8.5
 
     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
   SHELL
@@ -29,14 +29,13 @@ Vagrant.configure("2") do |config|
     trigger.name = "Launching App"
     trigger.info = "Running the TODO app setup script"
     trigger.run_remote = {privileged: false, inline: "
-      # Install dependencies and launch
-      # <your script here>
       cd /vagrant
-      export PATH=\"$HOME/.pyenv/bin:$PATH\"
-      eval \"$(pyenv init -)\"
+      # export PATH=\"$HOME/.pyenv/bin:$PATH\"
+      # eval \"$(pyenv init -)\"
       pyenv shell 3.8.1
       poetry install
-      poetry run flask run --host=0.0.0.0
+      # poetry run flask run --host=0.0.0.0
+      poetry run gunicorn -c ./gunicorn.conf.py wsgi:app --daemon
     "}
   end
 end
