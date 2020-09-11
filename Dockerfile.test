@@ -1,0 +1,12 @@
+FROM python:3.8-slim-buster
+WORKDIR /app
+
+RUN pip install poetry \
+  && poetry config virtualenvs.create false
+
+COPY poetry.lock pyproject.toml /app/
+RUN poetry install
+
+COPY . /app
+# We don't do e2e tests yet
+ENTRYPOINT ["poetry", "run", "pytest", "tests"] 
