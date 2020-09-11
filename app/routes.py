@@ -1,8 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 
-from ToDoItem import ItemStatus
-from trello_client import Trello
-from view_models import ItemsViewModel
+from app.ToDoItem import ItemStatus
+from app.trello_client import Trello
+from app.view_models import ItemsViewModel
 
 bp = Blueprint("main", __name__, template_folder="templates")
 

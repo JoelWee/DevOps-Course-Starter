@@ -7,7 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 import app
-from trello_client import TrelloBoard
+from app.trello_client import TrelloBoard
 
 
 @pytest.fixture(scope="module")

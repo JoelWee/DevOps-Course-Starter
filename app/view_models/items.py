@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import List
 
-from ToDoItem import ItemStatus, ToDoItem
+from app.ToDoItem import ItemStatus, ToDoItem
 
 
 class ItemsViewModel:

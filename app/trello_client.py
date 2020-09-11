@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from flask import current_app
 
-from ToDoItem import ItemStatus, ToDoItem
+from app.ToDoItem import ItemStatus, ToDoItem
 
 TRELLO_API_BASE_URL = "https://api.trello.com/1"
 

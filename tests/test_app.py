@@ -2,7 +2,7 @@ import pytest
 from dotenv import load_dotenv
 
 import app
-from mock_trello_requests import cards, lists
+from tests.mock_trello_requests import cards, lists
 
 
 @pytest.fixture

@@ -2,8 +2,8 @@ from datetime import datetime
 
 import pytest
 
-from ToDoItem import ItemStatus, ToDoItem
-from view_models.items import ItemsViewModel
+from app.ToDoItem import ItemStatus, ToDoItem
+from app.view_models.items import ItemsViewModel
 
 test_date = datetime(2020, 1, 1)
 
