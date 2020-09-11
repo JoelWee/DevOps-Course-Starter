@@ -13,10 +13,9 @@ Vagrant.configure("2") do |config|
     echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
     echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.profile
     
-    # sourcing ~/.bashrc doesn't seem to work...
-    source ~/.profile
+    # source ~/.profile
     export PATH="$HOME/.pyenv/bin:$PATH"
-    # eval "$(pyenv init -)"
+    eval "$(pyenv init -)"
     pyenv install 3.8.5
     pyenv global 3.8.5
 
@@ -30,8 +29,7 @@ Vagrant.configure("2") do |config|
     trigger.info = "Running the TODO app setup script"
     trigger.run_remote = {privileged: false, inline: "
       cd /vagrant
-      # export PATH=\"$HOME/.pyenv/bin:$PATH\"
-      # eval \"$(pyenv init -)\"
+      source ~/.profile
       pyenv shell 3.8.1
       poetry install
       # poetry run flask run --host=0.0.0.0
