@@ -6,12 +6,12 @@ The project uses a virtual environment to isolate package dependencies.  You wil
 
 ### On Windows (Using Git Bash), macOS and Linux
 ```bash
-$ source setup.sh
+cp -n .env.template .env
 ```
 
 Once the setup script has completed and all packages have been installed, start the Flask app by running:
 ```bash
-$ poetry run flask run
+poetry run flask run
 ```
 
 You should see output similar to the following:
@@ -29,10 +29,8 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
 ### Run with docker
 ```sh
-docker build --target production --tag todo-app:prod
-docker run --env-file .env -p 5000:5000 todo-app:prod
-docker build --target development --tag todo-app:dev
-docker run --env-file .env -p 5000:5000 -v "$(pwd)":/app todo-app:dev
+docker-compose up -f docker-compose.prod.yml --build
+docker-compose up --build
 ```
 
 ### Running Tests
@@ -49,5 +47,5 @@ Note that running `pytest` doesn't work because of different .env files used
 ```sh
 # unit tests
 docker build --tag todo-app:test -f Dockerfile.test .
-docker run --env-file .env todo-app:test 
+docker run --env-file .env -v "$(pwd)":/app todo-app:test 
 ```

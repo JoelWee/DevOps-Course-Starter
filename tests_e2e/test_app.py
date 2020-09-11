@@ -5,14 +5,18 @@ import pytest
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 
 import app
 from app.trello_client import TrelloBoard
 
+options = Options()
+options.headless = True
+
 
 @pytest.fixture(scope="module")
 def driver():
-    with webdriver.Firefox() as driver:
+    with webdriver.Firefox(options=options) as driver:
         yield driver
 
 

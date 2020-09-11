@@ -9,3 +9,10 @@ services:
     env_file: .env
     volumes:
       - .:/app
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    env_file: .env
+    volumes:
+      - .:/app
