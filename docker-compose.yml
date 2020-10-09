@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      target: development
+    ports:
+      - "5000:5000"
+    env_file: .env
+    volumes:
+      - .:/app
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    env_file: .env
+    volumes:
+      - .:/app

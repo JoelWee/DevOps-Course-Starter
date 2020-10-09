@@ -6,12 +6,12 @@ The project uses a virtual environment to isolate package dependencies.  You wil
 
 ### On Windows (Using Git Bash), macOS and Linux
 ```bash
-$ source setup.sh
+cp -n .env.template .env
 ```
 
 Once the setup script has completed and all packages have been installed, start the Flask app by running:
 ```bash
-$ poetry run flask run
+poetry run flask run
 ```
 
 You should see output similar to the following:
@@ -27,8 +27,14 @@ You should see output similar to the following:
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
 
 
+### Run with docker
+```sh
+docker-compose up -f docker-compose.prod.yml --build
+docker-compose up --build
+```
+
 ### Running Tests
-#### Commands
+#### Locally
 ```python
 poetry shell
 pytest tests  # run unit and integration tests
@@ -36,3 +42,10 @@ pytest tests_e2e  # run e2e tests
 ```
 
 Note that running `pytest` doesn't work because of different .env files used
+
+#### With Docker
+```sh
+# unit tests
+docker build --tag todo-app:test -f Dockerfile.test .
+docker run --env-file .env -v "$(pwd)":/app todo-app:test 
+```
