@@ -1,2 +1,2 @@
 script:
-  - echo "hello world"
+  - docker-compose -f docker-compose.ci.yml up --build --abort-on-container-exit
