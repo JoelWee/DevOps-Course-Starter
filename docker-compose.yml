@@ -12,7 +12,6 @@ services:
   tests:
     build:
       context: .
-      dockerfile: Dockerfile.test
       target: test_watch
     env_file: .env
     volumes:
