@@ -26,6 +26,7 @@ def test_app():
     trello_board = TrelloBoard(
         key=os.environ["TRELLO_API_KEY"], token=os.environ["TRELLO_API_TOKEN"]
     )
+
     board_id = trello_board.create("test")
     os.environ["TRELLO_BOARD_ID"] = board_id
 
