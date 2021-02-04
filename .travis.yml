@@ -11,7 +11,7 @@ before_deploy:
   - docker push j0elwee/devops-trg:$TRAVIS_COMMIT
   - docker push j0elwee/devops-trg:ci
   - curl https://cli-assets.heroku.com/install.sh | sh
-  - echo $DOCKER_HUB_PASSWORD | docker login -u j0elwee --password-stdin registry.heroku.com
+  - echo $HEROKU_API_KEY | docker login -u j0elwee --password-stdin registry.heroku.com
   - docker tag j0elwee/devops-trg registry.heroku.com/devops-trg/web
   - docker push registry.heroku.com/devops-trg/web
 deploy:
