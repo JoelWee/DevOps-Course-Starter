@@ -46,6 +46,18 @@ Note that running `pytest` doesn't work because of different .env files used
 #### With Docker
 ```sh
 # unit tests
-docker build --tag todo-app:test -f Dockerfile.test .
-docker run --env-file .env -v "$(pwd)":/app todo-app:test 
+docker build --tag todo-app .
+docker run --env-file .env -v "$(pwd)":/app todo-app test_watch
+```
+
+## Deployment to Heroku
+
+### Manual
+```sh
+heroku login
+heroku container:login
+docker pull j0elwee/devops-trg
+docker build --cache-from j0elwee/devops-trg -t registry.heroku.com/devops-trg/web --target production .
+docker push registry.heroku.com/devops-trg/web
+heroku container:release web -a devops-trg
 ```
