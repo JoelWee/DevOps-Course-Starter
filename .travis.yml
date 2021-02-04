@@ -5,19 +5,20 @@ install:
   - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from j0elwee/devops-trg:ci -t j0elwee/devops-trg:ci --target ci .
 script:
   - docker run -e TRELLO_API_KEY -e TRELLO_API_TOKEN j0elwee/devops-trg:ci
-after_success:
+before_deploy:
   - echo $DOCKER_HUB_PASSWORD | docker login -u j0elwee --password-stdin
   - docker push j0elwee/devops-trg
   - docker push j0elwee/devops-trg:$TRAVIS_COMMIT
   - docker push j0elwee/devops-trg:ci
-before_deploy:
-  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-  - docker login -u "joel.wee@softwire.com" --password=$HEROKU_API_KEY registry.heroku.com
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - echo $DOCKER_HUB_PASSWORD | docker login -u j0elwee --password-stdin registry.heroku.com
   - docker tag j0elwee/devops-trg registry.heroku.com/devops-trg/web
   - docker push registry.heroku.com/devops-trg/web
 deploy:
   provider: script
   script: heroku container:release web -a devops-trg
+  on: 
+    branch: master
 env:
   global:
   - secure: diiXAudwQgTtKwjS/VESa5ixxtTxDte95Ox8x1I63s6aZifqCluQJNxWu0jUNE88JmO6WfLFITb36krW81f85CEfXFnqSJuhU9Bx4l5W+oIYiIDHBhlaPj8+vZy5nPBE54wHgjPIZJXu3hGkEMcrnvGCLZGNvEd6PoSvwOoRwvrNp5e2LC8dnM8+kCPnlDVwwppRj5w/ysIDsCZqlbCI67jR2Fd91gKJhREWtopzkaKnDahjo4kRUqu25I3SaI6QUBTAaKzTGxUsNrrrWXFXLkSVSL7amZA+xoyOCE2m9MD/Ffx93R+Y6OT43glvab4s7wVtyqwyMzpcvnhZR6mEXeJGHJDeJKLQap7RaHqWUfpz0dwfnv0bJ8eByl34n8GZE/nD8akohD6IQKQaHezgCkxKwdM/wveNpzmUlfHGGAcguG8XjqgKsQUFhoGlDbnfesQVefyXLfc91hLTfIVNUsUFYVA28Sk8dqp/ph6ukA+JemHOSxrromeebwMoy20tG4c9lEzQPXsjsURdIB4mXYgU0iNKr0MVxX8edOG8QqBe4un7qzMz/SHzkyr2QXJiVjVIMVytuPTAWpPqOM/KtxTIIL+z3U7RGIqm1aEgn3wPJdIMB4l0I2Qs6kD280kNThHfollyXbcT1qcJEnfc3KkeoCHmp3qTNalQDT140dA=
