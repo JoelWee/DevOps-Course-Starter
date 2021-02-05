@@ -9,8 +9,7 @@ COPY poetry.lock pyproject.toml /app/
 RUN poetry install --no-dev
 COPY . /app
 
-CMD gunicorn --bind 0.0.0.0:{$PORT:-5000} wsgi:app
-
+CMD gunicorn --bind 0.0.0.0:${PORT:-5000} wsgi:app
 
 FROM base as development
 COPY poetry.lock pyproject.toml /app/

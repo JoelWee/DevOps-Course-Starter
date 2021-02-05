@@ -38,10 +38,8 @@ docker-compose up --build
 ```python
 poetry shell
 pytest tests  # run unit and integration tests
-pytest tests_e2e  # run e2e tests
+pytest tests_e2e  # run e2e tests, requires running mongo locally (e.g. via docker) and setting the connection uri appropriately (e.g. via env variable)
 ```
-
-Note that running `pytest` doesn't work because of different .env files used
 
 #### With Docker
 ```sh
