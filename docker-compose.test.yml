@@ -4,11 +4,10 @@ services:
     build:
       context: .
       target: ci
+      dockerfile: Dockerfile.test
     environment:
-      - "MONGO_TEST_BASE_URI=mongodb://db:27017"
+      - "MONGO_URI=mongodb://test_db:27017/test"
     depends_on:
-      - db
-  db:
+      - test_db
+  test_db:
     image: mongo
-    ports:
-      - "27017:27017"

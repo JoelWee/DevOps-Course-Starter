@@ -8,16 +8,17 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 install:
+  - docker pull j0elwee/devops-trg
   - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from j0elwee/devops-trg -t j0elwee/devops-trg -t j0elwee/devops-trg:$TRAVIS_COMMIT --target production .
-  - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from j0elwee/devops-trg:ci -t j0elwee/devops-trg:ci --target ci .
-  - docker-compose -f docker-compose.test.yml build
+  - docker pull j0elwee/devops-trg:python-3.8-slim-buster-with-geckodriver
+  - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from j0elwee/devops-trg:python-3.8-slim-buster-with-geckodriver -t j0elwee/devops-trg:python-3.8-slim-buster-with-geckodriver -f Dockerfile.test.base .
 script:
   - docker-compose -f docker-compose.test.yml up --exit-code-from tests
 before_deploy:
   - echo $DOCKER_HUB_PASSWORD | docker login -u j0elwee --password-stdin
   - docker push j0elwee/devops-trg
   - docker push j0elwee/devops-trg:$TRAVIS_COMMIT
-  - docker push j0elwee/devops-trg:ci
+  - docker push j0elwee/devops-trg:python-3.8-slim-buster-with-geckodriver
   - curl https://cli-assets.heroku.com/install.sh | sh
   - echo $HEROKU_API_KEY | docker login -u j0elwee --password-stdin registry.heroku.com
   - docker tag j0elwee/devops-trg registry.heroku.com/devops-trg/web
@@ -26,7 +27,7 @@ deploy:
   provider: script
   script: heroku container:release web -a devops-trg
   on: 
-    branch: mod-9-db
+    branch: master
 env:
   global:
   - DOCKER_COMPOSE_VERSION=1.28.2

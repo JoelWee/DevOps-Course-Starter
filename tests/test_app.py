@@ -2,7 +2,6 @@ import os
 
 import app
 import pytest
-from dotenv import load_dotenv
 from mockupdb import MockupDB, OpMsg
 
 from tests.mock_data import items
@@ -13,12 +12,12 @@ def client():
     server = MockupDB(auto_ismaster=True)
     server.run()
     server.autoresponds(
-        OpMsg("find", "todos"), cursor={"id": 0, "firstBatch": items.json}
+        OpMsg("find", "todos"), cursor={"id": 0, "firstBatch": items.json_data}
     )
-    os.environ["MONGO_URI"] = f"{server.uri}/test"
+    mongo_uri = f"{server.uri}/test"
 
     # Create the new app.
-    test_app = app.create_app()
+    test_app = app.create_app(mongo_uri)
     # Use the app to create a test_client that can be used in our tests.
     with test_app.test_client() as client:
         yield client

@@ -11,8 +11,6 @@ from selenium.webdriver.firefox.options import Options
 options = Options()
 options.headless = True
 
-default_mongo_uri = "mongodb://localhost:27017"
-
 
 @pytest.fixture(scope="module")
 def driver():
@@ -22,10 +20,6 @@ def driver():
 
 @pytest.fixture(scope="module")
 def test_app():
-    mongo_test_base_uri = os.environ.get("MONGO_TEST_BASE_URI", default_mongo_uri)
-    mongo_db = "test"
-    os.environ["MONGO_URI"] = f"{mongo_test_base_uri}/{mongo_db}"
-
     application = app.create_app()
 
     # start the app in its own thread.
@@ -36,7 +30,7 @@ def test_app():
     # Tear Down
     thread.join(1)
     mongo_client = MongoClient(application.config["MONGO_URI"])
-    mongo_client.drop_database(mongo_db)
+    mongo_client.drop_database(mongo_client.get_default_database().name)
 
 
 def test_task_journey(driver, test_app):
