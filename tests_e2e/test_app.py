@@ -1,3 +1,4 @@
+import os
 from threading import Thread
 
 import app
@@ -19,8 +20,9 @@ def driver():
 
 @pytest.fixture(scope="module")
 def test_app():
+    os.environ["SECRET_KEY"] = "SECRET_KEY"
+    os.environ["LOGIN_DISABLED"] = "1"
     application = app.create_app()
-    application.config["LOGIN_DISABLED"] = True
 
     # start the app in its own thread.
     thread = Thread(target=lambda: application.run(use_reloader=False))

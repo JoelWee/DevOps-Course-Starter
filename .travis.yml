@@ -27,7 +27,7 @@ deploy:
   provider: script
   script: heroku container:release web -a devops-trg
   on: 
-    branch: master
+    branch: mod-10-oauth
 env:
   global:
   - DOCKER_COMPOSE_VERSION=1.28.2

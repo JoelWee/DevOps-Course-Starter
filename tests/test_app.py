@@ -1,3 +1,5 @@
+import os
+
 import app
 import pytest
 from mockupdb import MockupDB, OpMsg
@@ -15,8 +17,9 @@ def client():
     mongo_uri = f"{server.uri}/test"
 
     # Create the new app.
+    os.environ["SECRET_KEY"] = "SECRET_KEY"
+    os.environ["LOGIN_DISABLED"] = "1"
     test_app = app.create_app(mongo_uri)
-    test_app.config["LOGIN_DISABLED"] = True
     # Use the app to create a test_client that can be used in our tests.
     with test_app.test_client() as client:
         yield client

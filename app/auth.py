@@ -6,6 +6,7 @@ import requests
 from flask import Blueprint, current_app, flash, redirect, request, url_for
 from flask_login import UserMixin, current_user, login_user
 from flask_login.login_manager import LoginManager
+from flask_login.mixins import AnonymousUserMixin
 from oauthlib.oauth2 import WebApplicationClient
 
 authorization_base_url = "https://github.com/login/oauth/authorize"
@@ -13,7 +14,8 @@ token_url = "https://github.com/login/oauth/access_token"
 user_url = "https://api.github.com/user"
 
 client = WebApplicationClient(os.environ.get("OAUTH_CLIENT_ID"))
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+if os.environ.get("FLASK_ENV") == "development" or True:  # Heroku has no ssl
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 
 class Role(Enum):
@@ -28,6 +30,10 @@ roles = {
 
 def init_config_manager(app):
     login_manager = LoginManager()
+
+    if app.config.get("LOGIN_DISABLED"):
+        AnonymousUser.role = Role.WRITER.value
+    login_manager.anonymous_user = AnonymousUser
 
     @login_manager.unauthorized_handler
     def unauthenticated():
@@ -73,6 +79,11 @@ class User(UserMixin):
         self.role = roles[username]
 
 
+class AnonymousUser(AnonymousUserMixin):
+    role = Role.READER
+    id = "AnonymousUser"
+
+
 def action_allowed(current_role: str, required_role: Role):
     if required_role == Role.WRITER:
         return current_role == Role.WRITER.value
@@ -85,7 +96,7 @@ def requires_role(required_role: Role):
     def decorator(func):
         @wraps(func)
         def with_authorization(*args, **kwargs):
-            if current_user and not action_allowed(current_user.role, required_role):
+            if not action_allowed(current_user.role, required_role):
                 flash("Your role does not allow you to do this")
                 return None
             return func(*args, **kwargs)

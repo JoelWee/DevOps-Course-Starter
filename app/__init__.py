@@ -12,7 +12,7 @@ def create_app(mongo_uri: str = None):
     if mongo_uri:
         app.config["MONGO_URI"] = mongo_uri
 
-    if not app.config["MONGO_URI"]:
+    if not app.config.get("MONGO_URI"):
         raise ValueError("Missing config for Flask application")
 
     init_config_manager(app)
