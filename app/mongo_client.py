@@ -1,9 +1,9 @@
 from datetime import datetime
 
-import pymongo
 from bson.objectid import ObjectId
 from flask import current_app
 
+from app.auth import Role, requires_role
 from app.ToDoItem import ItemStatus, ToDoItem
 
 
@@ -19,6 +19,7 @@ class MongoClient:
             last_modified=json["last_modified"],
         )
 
+    @requires_role(required_role=Role.READER)
     def get_items(self):
         """
         Fetches all saved items from the session.
@@ -30,6 +31,7 @@ class MongoClient:
 
         return [self.get_item_from_json(item) for item in items]
 
+    @requires_role(required_role=Role.READER)
     def get_item(self, item_id: str):
         """
         Fetches the saved item with the specified ID.
@@ -43,6 +45,7 @@ class MongoClient:
         item = self.todo_col.find_one({"_id": ObjectId(item_id)})
         return self.get_item_from_json(item)
 
+    @requires_role(required_role=Role.WRITER)
     def add_item(self, title):
         """
         Adds a new item with the specified title to the session.
@@ -61,6 +64,7 @@ class MongoClient:
             }
         )
 
+    @requires_role(required_role=Role.WRITER)
     def update_status(self, item_id: str, status: ItemStatus):
         """
         Updates an existing item in the session. Ignore if no existing item matches the ID of the specified item.

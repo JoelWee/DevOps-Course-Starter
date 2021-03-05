@@ -1,5 +1,3 @@
-import os
-
 import app
 import pytest
 from mockupdb import MockupDB, OpMsg
@@ -18,6 +16,7 @@ def client():
 
     # Create the new app.
     test_app = app.create_app(mongo_uri)
+    test_app.config["LOGIN_DISABLED"] = True
     # Use the app to create a test_client that can be used in our tests.
     with test_app.test_client() as client:
         yield client
