@@ -9,10 +9,9 @@ services:
     env_file: .env
     volumes:
       - .:/app
-  tests:
-    build:
-      context: .
-      target: test_watch
-    env_file: .env
-    volumes:
-      - .:/app
+    environment:
+      - "MONGO_URI=mongodb://db:27017/dev"
+    depends_on:
+      - db
+  db:
+    image: mongo

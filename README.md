@@ -6,7 +6,8 @@ The project uses a virtual environment to isolate package dependencies.  You wil
 
 ### On Windows (Using Git Bash), macOS and Linux
 ```bash
-cp -n .env.template .env
+cp -n .env.template .env # copy env file and populate the MONGO_URI manually
+poetry install -E linting
 ```
 
 Once the setup script has completed and all packages have been installed, start the Flask app by running:
@@ -38,16 +39,15 @@ docker-compose up --build
 ```python
 poetry shell
 pytest tests  # run unit and integration tests
-pytest tests_e2e  # run e2e tests
+pytest tests_e2e  # run e2e tests, requires running mongo locally (e.g. via docker) and setting the connection uri appropriately (e.g. via env variable)
 ```
-
-Note that running `pytest` doesn't work because of different .env files used
 
 #### With Docker
 ```sh
 # unit tests
-docker build --tag todo-app .
-docker run --env-file .env -v "$(pwd)":/app todo-app test_watch
+docker pull j0elwee/devops-trg:python-3.8-slim-buster-with-geckodriver
+docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from j0elwee/devops-trg:python-3.8-slim-buster-with-geckodriver -t j0elwee/devops-trg:python-3.8-slim-buster-with-geckodriver -f Dockerfile.test.base .
+docker-compose -f docker-compose.test.yml up --exit-code-from tests --build
 ```
 
 ## Deployment to Heroku

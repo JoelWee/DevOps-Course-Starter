@@ -1,24 +1,29 @@
-import pytest
-from dotenv import load_dotenv
+import os
 
 import app
-from tests.mock_trello_requests import cards, lists
+import pytest
+from mockupdb import MockupDB, OpMsg
+
+from tests.mock_data import items
 
 
 @pytest.fixture
 def client():
-    # Use our test integration config instead of the 'real' version file_path = find_dotenv('.env.test')
-    load_dotenv(".env.test", override=True)
+    server = MockupDB(auto_ismaster=True)
+    server.run()
+    server.autoresponds(
+        OpMsg("find", "todos"), cursor={"id": 0, "firstBatch": items.json_data}
+    )
+    mongo_uri = f"{server.uri}/test"
+
     # Create the new app.
-    test_app = app.create_app()
+    test_app = app.create_app(mongo_uri)
     # Use the app to create a test_client that can be used in our tests.
     with test_app.test_client() as client:
         yield client
 
 
-def test_index_page(requests_mock, client):
-    requests_mock.get("https://api.trello.com/1/boards/id/lists", json=lists.json)
-    requests_mock.get("https://api.trello.com/1/boards/id/cards", json=cards.json)
+def test_index_page(client):
     response = client.get("/")
     html = str(response.data)
 

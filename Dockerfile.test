@@ -1,0 +1,9 @@
+FROM j0elwee/devops-trg:python-3.8-slim-buster-with-geckodriver as test_base
+WORKDIR /app
+COPY poetry.lock pyproject.toml /app/
+
+FROM test_base as ci
+RUN poetry install
+COPY . /app
+RUN chmod +x "scripts/run_tests.sh"
+ENTRYPOINT [ "scripts/run_tests.sh" ]

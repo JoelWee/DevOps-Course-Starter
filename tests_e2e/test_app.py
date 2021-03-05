@@ -1,14 +1,12 @@
 import os
 from threading import Thread
 
+import app
 import pytest
-from dotenv import load_dotenv
+from pymongo import MongoClient
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
-
-import app
-from app.trello_client import TrelloBoard
 
 options = Options()
 options.headless = True
@@ -22,14 +20,6 @@ def driver():
 
 @pytest.fixture(scope="module")
 def test_app():
-    load_dotenv(".env", override=True)
-    trello_board = TrelloBoard(
-        key=os.environ["TRELLO_API_KEY"], token=os.environ["TRELLO_API_TOKEN"]
-    )
-
-    board_id = trello_board.create("test")
-    os.environ["TRELLO_BOARD_ID"] = board_id
-
     application = app.create_app()
 
     # start the app in its own thread.
@@ -39,7 +29,8 @@ def test_app():
     yield application
     # Tear Down
     thread.join(1)
-    trello_board.delete(board_id)
+    mongo_client = MongoClient(application.config["MONGO_URI"])
+    mongo_client.drop_database(mongo_client.get_default_database().name)
 
 
 def test_task_journey(driver, test_app):

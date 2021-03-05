@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  tests:
+    build:
+      context: .
+      target: ci
+      dockerfile: Dockerfile.test
+    environment:
+      - "MONGO_URI=mongodb://test_db:27017/test"
+    depends_on:
+      - test_db
+  test_db:
+    image: mongo
