@@ -7,6 +7,7 @@ from flask import Blueprint, current_app, flash, redirect, request, url_for
 from flask_login import UserMixin, current_user, login_user
 from flask_login.login_manager import LoginManager
 from flask_login.mixins import AnonymousUserMixin
+from flask_login.utils import login_required
 from oauthlib.oauth2 import WebApplicationClient
 
 authorization_base_url = "https://github.com/login/oauth/authorize"
@@ -23,9 +24,7 @@ class Role(Enum):
     WRITER = "WRITER"
 
 
-roles = {
-    "JoelWee": Role.WRITER.value,
-}
+roles = {"JoelWee": Role.WRITER.value}
 
 
 def init_config_manager(app):
@@ -41,9 +40,7 @@ def init_config_manager(app):
 
     @login_manager.user_loader
     def load_user(user_id):
-        r = requests.get(f"https://api.github.com/users/{user_id}")
-        user_data = r.json()
-        return User(user_data["login"])
+        return User(user_id)
 
     login_manager.init_app(app)
 
@@ -66,6 +63,7 @@ def authorize():
     r = requests.post(url, body, headers={**headers, "accept": "application/json"})
     client.parse_request_body_response(r.content)
     url, headers, body = client.add_token(user_url)
+
     r = requests.get(url, headers={**headers, "accept": "application/json"})
     user_data = r.json()
     user = User(user_data["login"])
@@ -76,11 +74,11 @@ def authorize():
 class User(UserMixin):
     def __init__(self, username: str):
         self.id = username
-        self.role = roles[username]
+        self.role = roles.get(username, Role.READER.value)
 
 
 class AnonymousUser(AnonymousUserMixin):
-    role = Role.READER
+    role = Role.READER.value
     id = "AnonymousUser"
 
 
@@ -94,6 +92,7 @@ def action_allowed(current_role: str, required_role: Role):
 
 def requires_role(required_role: Role):
     def decorator(func):
+        @login_required
         @wraps(func)
         def with_authorization(*args, **kwargs):
             if not action_allowed(current_user.role, required_role):
