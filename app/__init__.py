@@ -1,8 +1,9 @@
 from flask import Flask
-from flask_pymongo import PyMongo
+from flask_pymongo import PyMongo  # for Flask framework
 
-from app.flask_config import Config
-from app.routes import bp
+from app.auth import bp as auth_bp
+from app.auth import init_config_manager
+from app.routes import bp as main_bp
 
 
 def create_app(mongo_uri: str = None):
@@ -11,10 +12,12 @@ def create_app(mongo_uri: str = None):
     if mongo_uri:
         app.config["MONGO_URI"] = mongo_uri
 
-    if not app.config["MONGO_URI"]:
+    if not app.config.get("MONGO_URI"):
         raise ValueError("Missing config for Flask application")
 
-    app.register_blueprint(bp)
+    init_config_manager(app)
+    app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
     app.mongo = PyMongo(app)
 
     return app

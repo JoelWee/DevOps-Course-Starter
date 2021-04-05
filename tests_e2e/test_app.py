@@ -20,6 +20,8 @@ def driver():
 
 @pytest.fixture(scope="module")
 def test_app():
+    os.environ["SECRET_KEY"] = "SECRET_KEY"
+    os.environ["LOGIN_DISABLED"] = "1"
     application = app.create_app()
 
     # start the app in its own thread.

@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pymongo
 from bson.objectid import ObjectId
 from flask import current_app
 

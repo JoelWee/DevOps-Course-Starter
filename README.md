@@ -10,7 +10,22 @@ cp -n .env.template .env # copy env file and populate the MONGO_URI manually
 poetry install -E linting
 ```
 
-Once the setup script has completed and all packages have been installed, start the Flask app by running:
+### Setting up OAuth
+* Navigate to https://github.com/settings/applications/new and fill in the form. (You'll need to be logged into a github account)
+  * Set "Authorization callback URL" to "http://localhost:5000/auth/authorize"
+  * Set "Homepage URL" to "http://localhost:5000/"
+  * Name the app something sensible, e.g. "Devops training app (local)"
+* Copy the "Client ID" and set the OAUTH_CLIENT_ID to this value in the .env file
+* Click on "Generate a new client secret", copy the secret and use it to set the OAUTH_CLIENT_SECRET in .env
+
+### Setting up MongoDb
+Run a local mongo db instance by running
+```bash
+docker run -p 27017:27017 -d mongo
+```
+
+### Running the App
+After completing the setup, start the Flask app by running:
 ```bash
 poetry run flask run
 ```

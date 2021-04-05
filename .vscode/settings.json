@@ -1,7 +1,4 @@
 {
-  "python.pythonPath": "/Users/JoelWee/Library/Caches/pypoetry/virtualenvs/devops-course-starter-zdQHVq7i-py3.8/bin/python",
-  "python.linting.pylintEnabled": false,
-  "python.linting.enabled": false,
-  "python.linting.flake8Enabled": true,
-  "python.formatting.provider": "black"
+  "python.pythonPath": ".venv/bin/python3",
+  "python.linting.enabled": true,
 }
