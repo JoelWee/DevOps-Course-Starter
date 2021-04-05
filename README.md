@@ -45,7 +45,7 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
 ### Run with docker
 ```sh
-docker-compose up -f docker-compose.prod.yml --build
+docker-compose -f docker-compose.prod.yml up --build
 docker-compose up --build
 ```
 
@@ -75,4 +75,47 @@ docker pull j0elwee/devops-trg
 docker build --cache-from j0elwee/devops-trg -t registry.heroku.com/devops-trg/web --target production .
 docker push registry.heroku.com/devops-trg/web
 heroku container:release web -a devops-trg
+```
+
+### Azure
+The following is done in shell:
+
+#### Initialise DB
+```sh
+export RG="SoftwirePilot_JoelWee_ProjectExercise"
+export DBUSER="joel-cosmodb-user"
+export DBNAME="joel-cosmodb"
+az cosmosdb create --name $DBUSER --resource-group $RG --kind MongoDB
+az cosmosdb mongodb database create --account-name $DBUSER --name $DBNAME --resource-group $RG
+az cosmosdb keys list -n $DBUSER -g $RG --type connection-strings
+```
+
+#### Create App
+```sh
+export RG="SoftwirePilot_JoelWee_ProjectExercise"
+export APPPLAN="joel-app-plan"
+export APPNAME="joel-devops" # http://joel-devops.azurewebsites.net/
+export CONTAINER="j0elwee/devops-trg:latest"
+az appservice plan create --resource-group $RG -n $APPPLAN --sku B1 --is-linux
+az webapp create --resource-group $RG --plan $APPPLAN --name $APPNAME --deployment-container-image-name $CONTAINER
+
+# Configure app settings. Fill in the variables yourself
+az webapp config appsettings set -g $RG -n $APPNAME --settings FLASK_APP=$FLASK_APP MONGO_URI=$MONGO_URI OAUTH_CLIENT_ID=$OAUTH_CLIENT_ID  OAUTH_CLIENT_SECRET=$OAUTH_CLIENT_SECRET SECRET_KEY=$SECRET_KEY
+
+az webapp deployment container config --enable-cd true --resource-group $RG --name $APPNAME
+curl -dH -X POST $WEBHOOK # Test webhook
+travis encrypt --pro AZURE_WEBHOOK=$WEBHOOK
+```
+
+#### Secure DB
+Take env vars from above as required. This uses IP firewall. Can't seem to do VNets (Tier S1 and above required it seems?)
+```sh
+az webapp show --resource-group $RG --name $APPNAME --query outboundIpAddresses --output tsv # Call this and add the IPs to the azure portal
+```
+
+
+#### Add
+Take env vars from above as required. This uses IP firewall. Can't seem to do VNets (Tier S1 and above required it seems?)
+```sh
+az webapp show --resource-group $RG --name $APPNAME --query outboundIpAddresses --output tsv # Call this and add the IPs to the azure portal
 ```
