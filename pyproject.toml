@@ -15,6 +15,8 @@ flask-pymongo = "^2.3.0"
 oauthlib = "^3.1.0"
 flask-login = "^0.5.0"
 requests = "^2.25.1"
+loggly-python-handler = "^1.0.1"
+python-json-logger = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 selenium = "^3.141.0"

@@ -45,7 +45,8 @@ def init_config_manager(app):
     login_manager.init_app(app)
 
 
-bp = Blueprint("auth", __name__, template_folder="templates", url_prefix="/auth")
+bp = Blueprint("auth", __name__, template_folder="templates",
+               url_prefix="/auth")
 
 
 @bp.route("/login", methods=["GET"])
@@ -60,14 +61,19 @@ def authorize():
         authorization_response=request.url,
         client_secret=current_app.config["OAUTH_CLIENT_SECRET"],
     )
-    r = requests.post(url, body, headers={**headers, "accept": "application/json"})
+    r = requests.post(url, body, headers={
+                      **headers, "accept": "application/json"})
     client.parse_request_body_response(r.content)
     url, headers, body = client.add_token(user_url)
 
     r = requests.get(url, headers={**headers, "accept": "application/json"})
     user_data = r.json()
     user = User(user_data["login"])
-    login_user(user)
+    if login_user(user):
+        current_app.logger.info("%s logged in", user_data["login"])
+    else:
+        current_app.logger.warn(
+            "User '%s' failed to login", user_data["login"])
     return redirect("/")
 
 

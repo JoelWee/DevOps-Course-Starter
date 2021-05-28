@@ -48,6 +48,8 @@ resource "azurerm_app_service" "main" {
     "OAUTH_CLIENT_ID"            = var.oauth_client_id
     "OAUTH_CLIENT_SECRET"        = var.oauth_client_secret
     "SECRET_KEY"                 = var.secret_key
+    "LOGGLY_TOKEN"               = var.loggly_token
+    "LOG_LEVEL" = "DEBUG"
   }
 }
 
