@@ -52,6 +52,7 @@ class MongoClient:
         Returns:
             None
         """
+        current_app.logger.info("TODO item '%s' added", title)
         self.todo_col.insert_one(
             {
                 "title": title,
@@ -67,6 +68,8 @@ class MongoClient:
         Args:
             item_id: The item_id to move to the done list.
         """
+        current_app.logger.info(
+            "TODO item '%s' updated to %s", item_id, status.value)
         self.todo_col.update_one(
             {
                 "_id": ObjectId(item_id),
