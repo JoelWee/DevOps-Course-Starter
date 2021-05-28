@@ -31,7 +31,7 @@ deploy:
   provider: script
   script: bash scripts/deploy.sh
   on: 
-    branch: master
+    branch: mod-13-logging
 env:
   global:
   - TF_VERSION=0.14.7
