@@ -22,7 +22,9 @@ def create_app(mongo_uri: str = None):
     app.register_blueprint(auth_bp)
     app.mongo = PyMongo(app)
 
-    app.logger.setLevel(app.config["LOG_LEVEL"])
+    if app.config["LOG_LEVEL"] is not None:
+        app.logger.setLevel(app.config["LOG_LEVEL"])
+
     if app.config['LOGGLY_TOKEN'] is not None:
         handler = HTTPSHandler(
             f'https://logs-01.loggly.com/inputs/{app.config["LOGGLY_TOKEN"]}/tag/todo-app')

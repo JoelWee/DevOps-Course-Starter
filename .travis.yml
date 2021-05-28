@@ -25,7 +25,7 @@ before_deploy:
   - sudo mv terraform /usr/local/bin/
   - rm terraform_"$TF_VERSION"_linux_amd64.zip
   - terraform init
-  - terraform apply -auto-approve -var "oauth_client_id=$OAUTH_CLIENT_ID" -var "oauth_client_secret=$OAUTH_CLIENT_SECRET" -var "secret_key=$SECRET_KEY"
+  - terraform apply -auto-approve -var "oauth_client_id=$OAUTH_CLIENT_ID" -var "oauth_client_secret=$OAUTH_CLIENT_SECRET" -var "secret_key=$SECRET_KEY" -var "loggly_token=$LOGGLY_TOKEN"
   - export AZURE_WEBHOOK="$(terraform output -raw webhook_url)"
 deploy:
   provider: script

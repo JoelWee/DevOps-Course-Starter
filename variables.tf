@@ -20,3 +20,7 @@ variable "secret_key" {
   description = "Key for signing session cookie"
 }
 
+variable "loggly_token" {
+  description = "Token for Loggly"
+}
+
